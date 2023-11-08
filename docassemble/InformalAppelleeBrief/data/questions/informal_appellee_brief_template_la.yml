@@ -120,7 +120,7 @@ subquestion: |
 ---
 id: About You
 question: |
-  About You
+  Your pronouns
 fields:
   - "Pronouns": users[0].pronouns
     input type: dropdown
@@ -131,9 +131,9 @@ fields:
 ---
 id: Your Earlier Case
 question: |
-  Your Earlier Case
+  Name of the lower court in your case
 subquestion: |
-  These questions cover the specifics of your prior court case, which has now been appealed to this court.
+  The name of the lower court can be found on any documents received from the court prior to this appeal.
 fields:
   - "Lower Court Name": lower_court
 ---
@@ -144,6 +144,7 @@ subquestion: |
   Describe the specific legal issue(s) which is the issue the Appellant is appealing your case on.
 fields:
   - "Issues": issues
+    input type: area
 ---
 id: Case History
 question: |
@@ -152,6 +153,7 @@ subquestion: |
   Describe the steps in the legal system which have gotten your case to this point.
 fields:
   - "Case History": case_history
+    input type: area
 ---
 id: Statement of Facts
 question: |
@@ -160,6 +162,7 @@ subquestion: |
   Describe in detail all of the important facts of your case, including what led up to the legal proceedings beginning your case.
 fields:
   - "Statement of Facts": statement_of_facts
+    input type: area
 ---
 id: Argument
 question: |
@@ -168,6 +171,7 @@ subquestion: |
   Here is where you can make your legal argument. Using specific facts and applicable law, describe in detail why you should prevail in this case. Only address the specific issue(s) on appeal.
 fields:
   - "Argument": argument
+    input type: area
 ---
 id: Conclusion
 question: |
@@ -176,6 +180,7 @@ subquestion: |
   Summarize your argument in a brief statement. Then, lay out the specific relief you are requesting. (ie. what you want the court to do)
 fields:
   - "Conclusion": conclusion
+    input type: area
 ---
 id: Certificate of Service
 question: |
