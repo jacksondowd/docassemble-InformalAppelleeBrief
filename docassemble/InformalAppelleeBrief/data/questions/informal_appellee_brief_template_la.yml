@@ -107,14 +107,11 @@ continue button field: informal_appellee_brief_template_la_intro
 question: |
   Informal Appellee Brief
 subquestion: |
-  This interview will help you complete your Informal Appellee Brief.
+  This interview will help you complete your Informal Appellee Brief. Please wait to make any changes until the end of the interview! **If you use the "back" button while completing your interview, all work on later pages will be lost.**
   
   Before you get started, please gather all documents from your lower court case proceedings.
   
-  When you are finished, you will need to:
-  
-  1. File a Record Appendix (see _____)
-  2. 
+  When you are finished, you will need to file a Record Appendix (see _____)
   
   Most people take about _______ minutes to finish this interview.
 ---
@@ -133,7 +130,7 @@ id: Your Earlier Case
 question: |
   Name of the lower court in your case
 subquestion: |
-  The name of the lower court can be found on any documents received from the court prior to this appeal.
+  The name of the lower court can be found on any documents received from the court prior to this appeal. See the list of possible lower courts here: https://www.mass.gov/orgs/massachusetts-court-system
 fields:
   - "Lower Court Name": lower_court
 ---
@@ -185,6 +182,8 @@ fields:
 id: Certificate of Service
 question: |
   Certificate of Service
+subquestion: |
+  The Date of Service is the date on which this brief is delivered to the opposing parties. For more detailed information on certificates of service in the Appeals Court, see: https://www.mass.gov/rules-of-appellate-procedure/appellate-procedure-rule-13-filing-and-service
 fields:
   - "Date of Service": service_date
     datatype: date
