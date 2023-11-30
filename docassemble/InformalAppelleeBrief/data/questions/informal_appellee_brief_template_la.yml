@@ -40,7 +40,7 @@ code: |
   al_form_type = "appeal" 
 ---
 objects:
-  - users: ALPeopleList.using(there_are_any=True)
+  - users: ALPeopleList.using(there_are_any=True, complete_attribute = ["name.first", "pronouns", "address.address"])
   - other_parties: ALPeopleList.using(there_are_any=True)
 ---
 sections:
@@ -67,6 +67,9 @@ code: |
   set_progress(28)
   plaintiffs.gather()
   defendants.gather()
+  other_parties.gather()
+  other_parties[0].address.address
+  information
   issues
   set_progress(42)
   case_history
@@ -74,8 +77,6 @@ code: |
   argument
   set_progress(56)
   conclusion
-  other_parties.gather()
-  other_parties[0].address.address
   set_progress(70)
   service_date
   interview_order_informal_appellee_brief_template_la = True
@@ -115,16 +116,13 @@ subquestion: |
   
   Most people take about _______ minutes to finish this interview.
 ---
-id: About You
-question: |
-  Your pronouns
-fields:
-  - "Pronouns": users[0].pronouns
-    input type: dropdown
-    choices:
-      - He/Him
-      - She/Her
-      - Other
+id: Brief Information
+continue button field: information
+question: Writing Your Appellee Brief
+subquestion: |
+  The next 5 sections are where you will write the content of your brief. Please enter only the information that is requested in each section. 
+  You will be able to review your brief at the end. **Once you begin writing, do not attempt to go back to earlier parts of your brief, as you will lose your progress!**
+mandatory: True
 ---
 id: Your Earlier Case
 question: |
