@@ -2,6 +2,8 @@
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
+  - docassemble.MassAppealsCourt:appeals-basic-questions.yml
+  - docassemble.AffidavitofIndigencyMAVC:affidavit_body.yml
 ---
 metadata:
   title: >-
@@ -62,7 +64,7 @@ code: |
   users[0].address.address
   set_progress(14)
   users[0].email
-  lower_court
+  trial_court
   docket_number
   set_progress(28)
   plaintiffs.gather()
@@ -126,11 +128,23 @@ mandatory: True
 ---
 id: Your Earlier Case
 question: |
-  Name of the lower court in your case
-subquestion: |
-  The name of the lower court can be found on any documents received from the court prior to this appeal. See the list of possible lower courts here: https://www.mass.gov/orgs/massachusetts-court-system
+  Select the **Trial Court** department and division where your case was heard.
 fields:
-  - "Lower Court Name": lower_court
+  - no label: trial_court
+    datatype: object
+    choices: macourts.filter_courts(["Boston Municipal Court",
+      "District Court",
+      "Superior Court",
+      "Housing Court",
+      "Probate and Family Court",
+      "Juvenile Court",
+      "Land Court"])
+---
+id: Docket Number
+question: |
+  What is the **Trial Court** docket number for your case?
+fields: 
+  - Docket number: docket_number
 ---
 id: Issues on Appeal
 question: |
