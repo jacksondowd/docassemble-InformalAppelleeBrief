@@ -2,6 +2,7 @@
 include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
+  - docassemble.MassAccess:massaccess.yml
   - docassemble.MassAppealsCourt:appeals-basic-questions.yml
   - docassemble.AffidavitofIndigencyMAVC:affidavit_body.yml
 ---
@@ -11,7 +12,7 @@ metadata:
   short title: >-
     Informal Appellee Brief
   description: |-
-    This interview helps someone in Massachusetts complete your Informal Appellee Brief.
+    This interview helps someone in Massachusetts complete their Informal Appellee Brief.
   tags:
     - "CO-03-00-00-00"
   authors:
@@ -70,7 +71,13 @@ code: |
   plaintiffs.gather()
   defendants.gather()
   other_parties.gather()
-  other_parties[0].address.address
+  
+  if other_party_has_attorney:
+    other_parties[0].attorneys.there_are_any = True
+    other_parties[0].attorneys.gather(complete_attribute = "gathered_everthing")
+  else:
+    other_parties[0].address.address
+  
   information
   issues
   set_progress(42)
@@ -80,7 +87,17 @@ code: |
   set_progress(56)
   conclusion
   set_progress(70)
+  
+  explain_need_affidavit
+  #indigency_intro
+  fees['Filing fee'].waive = True
+  fees['Filing fee'].amount = 300.00
+  ask_affidavit_questions
+  if not is_indigent:
+    doesnt_qualify_interstitial
+  method_of_service
   service_date
+  
   interview_order_informal_appellee_brief_template_la = True
 ---
 ###################### Main order ######################
@@ -93,6 +110,7 @@ code: |
   informal_appellee_brief_template_la_intro
   interview_order_informal_appellee_brief_template_la
   signature_date
+  users[0].signature
   # Store anonymous data for analytics / statistics
   store_variables_snapshot(
       persistent=True,
@@ -190,6 +208,123 @@ subquestion: |
 fields:
   - "Conclusion": conclusion
     input type: area
+---
+id: explain_need_affidavit
+question: |
+  You may qualify for a fee waiver.
+subquestion: |
+  There is a filing fee, but you may qualify to get the fees waived.
+  
+  We will ask you questions to help you find out a little later.
+continue button field: explain_need_affidavit
+---
+id: method of service
+question: |
+  % if other_party_has_attorney: 
+  
+  **How** will you deliver the required copies of the motion, memorandum, and supporting materials to **${ other_parties[0].attorneys }**?
+  
+  % else:
+  
+  **How** will you deliver the required copies of the motion, memorandum, and supporting materials to **${ other_parties }**?
+  
+  % endif
+subquestion: |
+  % if other_party_has_attorney: 
+  
+  You are required to provide a copy of this motion, memorandum, and supporting materials to **${ other_parties[0].attorneys }**.
+  
+  % else:
+  
+  Since **${ other_parties }'s** does not have an attorney, you are required to serve **${ other_parties }** with a copy of this motion, memorandum, and supporting materials.  
+  
+  % endif
+  
+  You should **not** provide a copy of your Affidavit of Indigency, if any, to anyone except the Appeals Court.  
+field: method_of_service
+dropdown:
+  - Efile and serve (efilema.com): efile and serve (efilema.com)
+  - Email: email
+  - Mail: mail
+  - Hand delivery: hand delivery
+---
+objects:
+  - attorneys: ALPeopleList.using(there_are_any=True)
+  - other_parties[i].attorneys: PeopleList
+---
+id: other parties attorney trigger
+question: |
+  Does **${ other_parties }** have an attorney?
+yesno: other_party_has_attorney
+---
+generic object: ALIndividual
+code: |
+  x.name.first
+  x.address.address
+  x.email
+  x.gathered_everthing = True
+---
+id: other parties another attorney
+question: |
+  Does **${ other_parties }** have another attorney?
+yesno: other_parties[i].attorneys.there_is_another
+---
+id: other parties attorney name
+sets:
+  - other_parties[i].attorneys[j].name.first
+  - other_parties[i].attorneys[j].name.last
+generic object: ALIndividual
+question: |
+  What is **${ other_parties[i] }'s** attorney's name?
+fields:
+  - code: |
+      other_parties[i].attorneys[j].name_fields()
+---
+id: other parties attorney address
+generic object: ALIndividual
+sets:
+  - other_parties[i].attorneys[j].address.address
+  - other_parties[i].attorneys[j].address.city
+  - other_parties[i].attorneys[j].address.zip
+question: |
+  What is **${ other_parties[i].attorneys[j] }'s** address?
+fields:
+  - code: |
+      other_parties[i].attorneys[j].address_fields()
+---
+id: other parties attorney email
+generic object: ALIndividual
+question: |
+  What is **${ other_parties[i].attorneys[j] }'s** email address?
+fields:
+  - Email: other_parties[i].attorneys[j].email
+    datatype: email
+---
+id: service date
+question: |
+  % if other_party_has_attorney: 
+  
+  **When** will you deliver the required copies of the motion, memorandum, and supporting materials to **${ other_parties[0].attorneys }**?
+  
+  % else:
+  
+  **When** will you deliver the required copies of the motion, memorandum, and supporting materials to **${ other_parties }**?
+  
+  % endif
+subquestion: |
+  % if other_party_has_attorney: 
+  
+  You are required to provide a copy of this motion, memorandum, and supporting materials to **${ other_parties[0].attorneys }**.
+  
+  % else:
+  
+  Since **${ other_parties }'s** does not have an attorney, you are required to serve **${ other_parties }** with a copy of this motion, memorandum, and supporting materials.  
+  
+  % endif
+fields:
+  - Date: service_date
+    datatype: date
+    min: ${ today() }
 ---
 id: Certificate of Service
 question: |
