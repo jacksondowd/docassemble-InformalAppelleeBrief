@@ -57,8 +57,7 @@ code: |
   # Set the allowed courts for this interview
   allowed_courts = ['Appeals Court']
   nav.set_section("review_informal_appellee_brief_template_la")
-  user_role = "defendant"
-  user_ask_role = "defendant"
+  user_ask_role 
   users.gather()
   set_parts(subtitle=str(users))
   users[0].pronouns
@@ -68,15 +67,17 @@ code: |
   trial_court
   docket_number
   set_progress(28)
+  other_parties.there_are_any = True
   plaintiffs.gather()
   defendants.gather()
   other_parties.gather()
   
   if other_party_has_attorney:
     other_parties[0].attorneys.there_are_any = True
-    other_parties[0].attorneys.gather(complete_attribute = "gathered_everthing")
+    other_parties[0].attorneys.gather()
   else:
     other_parties[0].address.address
+    other_parties[0].email
   
   information
   issues
@@ -172,6 +173,7 @@ subquestion: |
 fields:
   - "Issues": issues
     input type: area
+    rows: 20
 ---
 id: Case History
 question: |
@@ -181,6 +183,7 @@ subquestion: |
 fields:
   - "Case History": case_history
     input type: area
+    rows: 20
 ---
 id: Statement of Facts
 question: |
@@ -190,6 +193,7 @@ subquestion: |
 fields:
   - "Statement of Facts": statement_of_facts
     input type: area
+    rows: 20
 ---
 id: Argument
 question: |
@@ -199,6 +203,7 @@ subquestion: |
 fields:
   - "Argument": argument
     input type: area
+    rows: 20
 ---
 id: Conclusion
 question: |
@@ -208,6 +213,7 @@ subquestion: |
 fields:
   - "Conclusion": conclusion
     input type: area
+    rows: 20
 ---
 id: explain_need_affidavit
 question: |
@@ -428,10 +434,10 @@ review:
     button: |
       **Argument**:
       ${ argument }
-  - Edit: lower_court
+  - Edit: trial_court
     button: |
       **Lower Court Name**:
-      ${ lower_court }
+      ${ trial_court }
 ---
 continue button field: defendants.revisit
 question: |
@@ -477,7 +483,7 @@ edit:
   - address.address
   - email
   - name.first
-  - pronouns
+  - person.pronoun_fields(show_help=True)
 confirm: True
 
 ---
