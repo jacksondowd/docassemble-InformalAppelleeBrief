@@ -129,11 +129,11 @@ continue button field: informal_appellee_brief_template_la_intro
 question: |
   Informal Appellee Brief
 subquestion: |
-  This interview will help you complete your Informal Appellee Brief. Please wait to make any changes until the end of the interview! **If you use the "back" button while completing your interview, all work on later pages will be lost.**
+  This interview will help you complete your **Informal Appellee Brief.** Please wait to make any changes until the end of the interview! **Please use the "Review your answers" button to go back to previous screens. If you use the "undo" button while completing your interview, all work on later pages will be lost.**
   
   Before you get started, please gather all documents from your lower court case proceedings.
   
-  When you are finished, you will need to file a Record Appendix (see _____)
+  When you are finished, you have the choice to file a Supplemental Record Appendix with the Appeals Court. Filing a supplemental appendix is not mandatory unless the document or testimony you are referring to in your informal appellee brief was not included in the appellant's record appendix or transcript(s). **(Note for LIT Clinic: section on the record appendix and instructions will be added to end of interview later on)**
   
   Most people take about _______ minutes to finish this interview.
 ---
@@ -141,8 +141,8 @@ id: Brief Information
 continue button field: information
 question: Writing Your Appellee Brief
 subquestion: |
-  The next 5 sections are where you will write the content of your brief. Please enter only the information that is requested in each section. 
-  You will be able to review your brief at the end. **Once you begin writing, do not attempt to go back to earlier parts of your brief, as you will lose your progress!**
+  In the next 5 sections you will write the content of your brief. Please enter only the information that is requested in each section. 
+  You will be able to review your brief at the end. **Once you begin writing, do not press the "Undo" button, as this will delete your progress. Use the "Review your answers" button in the top left to edit previous sections instead.**
 mandatory: True
 ---
 id: Your Earlier Case
@@ -165,31 +165,111 @@ question: |
 fields: 
   - Docket number: docket_number
 ---
+id: user role
+question: |
+  Did you file the first forms in this case in the lower court, or did you respond to a case
+  that someone else started?
+fields: 
+  - no label: user_ask_role
+    datatype: radio
+    choices:
+      - Started a new case in the lower court: plaintiff
+      - Responded to a case in the lower court: defendant
+  - note: |
+      Okay, you were the **Plaintiff** or Petitioner your lower court case. The other 
+      side was the **Defendant** or Respondent.
+    show if:
+      variable: user_ask_role
+      is: "plaintiff"
+  - note: |
+      Okay, you were the **Defendant** or Respondent in your lower court case. The other 
+      side was the **Plaintiff** or Petitioner.
+    show if:
+      variable: user_ask_role
+      is: "defendant"
+help:
+  label: |
+    How do I know?
+  content: |
+    We need to know if you were the "Plaintiff" or the "Defendant" in your
+    lower court case.
+    
+    If you were the first person to file a form in the case, you were the
+    "Plaintiff" or the "Petitioner."
+  
+    If you were responding to a case or court papers someone else filed, you were
+    the "Defendant" or the "Respondent."
+---
+id: names of opposing parties
+question: |
+  % if users==plaintiffs:
+  Please list the name of each **defendant** or respondent from 
+  your lower case below
+  % else:
+  Please list the name of each **plaintiff** or petitioner from 
+  your lower case below
+  % endif
+subquestion: |
+  Click "${word("Add another")}" to add more.
+list collect: 
+  enable: True
+  label: |
+    % if users==plaintiffs:
+    Defendant/Respondent ${i+1}    
+    % else:
+    Plaintiff/Petitioner ${i+1}
+    % endif
+fields:
+  - Is this a person, or a business?: other_parties[i].person_type
+    input type: radio
+    choices:
+      - Business or organization: business
+      - Person: individual
+  - First name: other_parties[i].name.first
+    show if:
+      variable: other_parties[i].person_type
+      is: "individual"
+  - Last name: other_parties[i].name.last
+    show if:
+      variable: other_parties[i].person_type      
+      is: "individual"
+  - Suffix: other_parties[i].name.suffix
+    code: |
+      name_suffix()
+    show if:
+      variable: other_parties[i].person_type      
+      is: "individual"
+    required: False      
+  - Name of organization or business: other_parties[i].name.first
+    show if:
+      variable: other_parties[i].person_type
+      is: business
+---
 id: Issues on Appeal
 question: |
   Issues on Appeal
 subquestion: |
-  Describe the specific legal issue(s) which is the issue the Appellant is appealing your case on.
+  List the issue or issues you are raising in this appeal and will discuss in your argument section.  It is your obligation to find out if any information in your case is impounded or confidential; for more information, please go to section (c) (4) of the Informal Brief Guidance.
 fields:
   - "Issues": issues
     input type: area
-    rows: 20
+    rows: 10
 ---
 id: Case History
 question: |
   Case History
 subquestion: |
-  Describe the steps in the legal system which have gotten your case to this point.
+  Identify when this case began in the trial court or agency, each order or decision that you are challenging as incorrect, the name of the judge who issued each challenged order or decision, and the date when each notice of appeal was filed.  Include references to the page(s) in the record appendix where each order or decision and each notice of appeal are located.
 fields:
   - "Case History": case_history
     input type: area
-    rows: 20
+    rows: 15
 ---
 id: Statement of Facts
 question: |
   Statement of Facts
 subquestion: |
-  Describe in detail all of the important facts of your case, including what led up to the legal proceedings beginning your case.
+  Provide a statement of the facts that are related to the issues you are appealing.  Each statement of fact must be followed by a reference to the specific page or pages in the record appendix or transcript(s) where that fact is found (Examples -– "Apx at 25"; "Transcript 10/15/22 at pg 55"; "Exhibit #2 at pg 95").  You may not include facts that were not brought to the attention of the trial judge or agency, and you may not cite generally to an entire document by its title or exhibit number without referring to specific page(s) of that document unless the document or exhibit is a single page.  Do not refer to any party or individual by name if their identity has been impounded by statute, court rule, or court order.  See Section (c) (4) of the Informal Brief Guidance for more information about impoundment and confidentiality.
 fields:
   - "Statement of Facts": statement_of_facts
     input type: area
@@ -199,7 +279,7 @@ id: Argument
 question: |
   Argument
 subquestion: |
-  Here is where you can make your legal argument. Using specific facts and applicable law, describe in detail why you should prevail in this case. Only address the specific issue(s) on appeal.
+  Present your reasons why the trial court or agency was wrong as a matter of law or fact, and why the Appeals Court should rule in your favor.  Your argument must be supported with citations to legal authorities such as case decisions (preferably from Massachusetts), statutes, regulations, court rules, constitutional provisions, or other authorities.  When discussing facts again in this section, you must again include a reference to the specific page or pages in your record appendix or transcript(s) where support for that fact can be found.
 fields:
   - "Argument": argument
     input type: area
@@ -209,11 +289,11 @@ id: Conclusion
 question: |
   Conclusion
 subquestion: |
-  Summarize your argument in a brief statement. Then, lay out the specific relief you are requesting. (ie. what you want the court to do)
+  A statement of what you are asking the Appeals Court to do (for example, order a new trial, enter judgment for you, modify the trial court judgment, etc.).
 fields:
   - "Conclusion": conclusion
     input type: area
-    rows: 20
+    rows: 10
 ---
 id: explain_need_affidavit
 question: |
@@ -284,7 +364,7 @@ question: |
   What is **${ other_parties[i] }'s** attorney's name?
 fields:
   - code: |
-      other_parties[i].attorneys[j].name_fields()
+     other_parties[i].attorneys[j].name_fields()
 ---
 id: other parties attorney address
 generic object: ALIndividual
@@ -573,6 +653,14 @@ attachment:
   skip undefined: True
   docx template file: informal_appellee_brief_template_la.docx
   tagged pdf: True
+---
+# attachment: 
+  # name: 
+  # filename: 
+  # variable name: 
+  # skip undefined: True
+  # docx template file: 
+  # tagged pdf: True
 
 
 
