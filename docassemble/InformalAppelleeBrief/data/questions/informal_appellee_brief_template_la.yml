@@ -3,8 +3,8 @@ include:
   - docassemble.AssemblyLine:assembly_line.yml
   - docassemble.ALAnyState:any_state.yml
   - docassemble.MassAccess:massaccess.yml
-  - docassemble.MassAppealsCourt:appeals-basic-questions.yml
   - docassemble.AffidavitofIndigencyMAVC:affidavit_body.yml
+  - docassemble.MassAppealsCourt:appeals-basic-questions.yml
 ---
 metadata:
   title: >-
@@ -376,7 +376,7 @@ code: |
   x.name.first
   x.address.address
   x.email
-  x.gathered_everthing = True
+  x.gathered_everything = True
 ---
 id: other parties another attorney
 question: |
